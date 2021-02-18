@@ -72,6 +72,7 @@
     <Compile Include="EmptyStage.cs" />
     <Compile Include="IStatus.cs" />
     <Compile Include="MangonelPatch.cs" />
+    <Compile Include="MissionMissileHitCallbackPatch.cs" />
     <Compile Include="OffStatus.cs" />
     <Compile Include="OnStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

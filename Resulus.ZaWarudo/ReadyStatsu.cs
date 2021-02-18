@@ -89,16 +89,18 @@ namespace Regulus.ZaWarudo
         }
         public void stopMissile(Mission.Missile missile)
         {
-
-            missile.Entity.SetMobility(TaleWorlds.Engine.GameEntity.Mobility.stationary);
-            //missile.get_Entity().SetMobility((Mobility)0);
+            missile.Stop();
+            /*missile.Entity.SetMobility(TaleWorlds.Engine.GameEntity.Mobility.stationary);            
             var globalFrame = missile.Entity.GetGlobalFrame();
-            globalFrame.rotation.RotateAboutSide((float)(System.Math.PI / 2f));
-            //((Mat3)(ref globalFrame.rotation)).RotateAboutSide(-(float)Math.PI / 2f);
+            globalFrame.rotation.RotateAboutSide((float)(System.Math.PI / 2f));            
             var zero = TaleWorlds.Library.Vec3.Zero;
             Mission.Current.HandleMissileCollisionReaction(((MBMissile)missile).Index, MissileCollisionReaction.Stick , globalFrame, missile.ShooterAgent, null, false, System.Convert.ToSByte(-1), null, zero, zero, -1);
             Mission.Current.RemoveMissileAsClient(missile.Index);
             HarmonyLib.Traverse.Create(Mission.Current).Method("RemoveMissileAtIndex", missile.Index).GetValue();
+            */
+
+
+
             var spawnedItem = (SpawnedItemEntity)Mission.Current.ActiveMissionObjects.ToList().Last();
             _Missiles.Add(new ZaWarudoMissile(missile, spawnedItem));
         }

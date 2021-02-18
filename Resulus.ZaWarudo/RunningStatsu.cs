@@ -25,7 +25,7 @@ namespace Regulus.ZaWarudo
 		}
 
         void IStatus.Enter()
-        {
+        {			
 			Main.Enable = true;   
         }
 
@@ -103,7 +103,7 @@ namespace Regulus.ZaWarudo
 					agent.MovementFlags &= ~Agent.MovementControlFlag.MoveMask;
 				}
 			}
-
+			
 			/*foreach (var item2 in Mission.Current.Missiles.ToList())
 			{
 				stopMissile(item2);

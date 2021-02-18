@@ -9,7 +9,7 @@ namespace Regulus.ZaWarudo
 
         public SpawnedItemEntity spawnedItem;
 
-        public MissionWeapon missionWeapon;
+       
 
         public TaleWorlds.Library.Vec3 position;
 
@@ -32,10 +32,7 @@ namespace Regulus.ZaWarudo
             position = ((MBMissile)missile).GetPosition();
             velocity = ((MBMissile)missile).GetVelocity();
             matrixFrame = missile.Entity.GetGlobalFrame();
-            if (missile.ShooterAgent != null)
-            {
-                missionWeapon = missile.ShooterAgent.WieldedWeapon;
-            }
+            
         }
     }
 }

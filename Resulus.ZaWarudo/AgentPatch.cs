@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using Regulus.ZaWarudo.Extersion;
-using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace Regulus.ZaWarudo
 {
+
 
     [HarmonyPatch(typeof(Agent))]
     internal class AgentPatch
