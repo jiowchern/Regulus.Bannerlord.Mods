@@ -9,7 +9,8 @@ namespace Regulus.ZaWarudo
 {
     public class Main : TaleWorlds.MountAndBlade.MBSubModuleBase
     {
-
+        public static bool Enable;
+        public readonly static System.Collections.Generic.Dictionary<Agent , AgentToDie> agentToDice = new System.Collections.Generic.Dictionary<Agent, AgentToDie>();
         readonly Regulus.Utility.StatusMachine _Machine;
         public Main()
         {
@@ -17,8 +18,8 @@ namespace Regulus.ZaWarudo
         }
         protected override void OnSubModuleLoad()
         {
-
-            new HarmonyLib.Harmony("regulus.zawarudo");
+            base.OnSubModuleLoad();
+            new HarmonyLib.Harmony("regulus.zawarudo").PatchAll(); 
 
             _ToOff();   
         }

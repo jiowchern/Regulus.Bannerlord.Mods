@@ -6,46 +6,47 @@ using TaleWorlds.DotNet;
 using TaleWorlds.Library;
 using TaleWorlds.InputSystem;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Regulus.ZaWarudo
 {
+
     internal class RunningStatsu :  Regulus.Utility.IStatus
     {
         private readonly ZaWarudoMissile[] _Missiles;
-		public event System.Action DoneEvent;
+        
+
+        public event System.Action DoneEvent;
         public RunningStatsu(ZaWarudoMissile[] missiles)
         {
             this._Missiles = missiles;
-        }
+			
+
+		}
 
         void IStatus.Enter()
         {
-            
+			Main.Enable = true;   
         }
 
         void IStatus.Leave()
         {
-			foreach (Agent agent in Mission.Current.Agents)
+			Main.Enable = false;
+			if (Mission.Current == null)
+				return;
+			foreach (Agent agent in Mission.Current.Agents.ToArray())
 			{
 				if (agent == Mission.Current.MainAgent)
 					continue;
-				{
-					agent.SetMaximumSpeedLimit(-1f, false);
-					if (agent.MountAgent == null)
-					{
-						agent.SetController(Agent.ControllerType.AI);
-						
-					}
-					else
-					{
-						agent.SetController(Agent.ControllerType.AI);						
-					}
-				}
+
+				agent.SetMaximumSpeedLimit(-1f, false);
+				agent.SetController(Agent.ControllerType.AI);
 			}
-			/*foreach (AgentToDie item in agentsToDie)
-			{
-				item.die();
-			}*/
+            
+			Main.agentToDice.Clear();
+
+
+
 			foreach (var missile2 in _Missiles)
 			{
 				var missile = missile2.missile;
@@ -59,6 +60,7 @@ namespace Regulus.ZaWarudo
 					spawnedItem.OnSpawnedItemEntityRemoved();
 				}
 			}
+			
 		}
 		public void addMissileToMission(ZaWarudoMissile missileItem)
 		{
@@ -86,6 +88,20 @@ namespace Regulus.ZaWarudo
 			{
 				DoneEvent();
 				return;
+			}
+			if (Mission.Current == null)
+				return;
+			foreach (Agent agent in Mission.Current.Agents.ToArray())
+            {
+				if(agent.Velocity.Length >= 0.7f)
+                {
+					agent.MovementFlags |= Agent.MovementControlFlag.Backward;
+					
+                }
+				else
+                {
+					agent.MovementFlags &= ~Agent.MovementControlFlag.MoveMask;
+				}
 			}
 
 			/*foreach (var item2 in Mission.Current.Missiles.ToList())

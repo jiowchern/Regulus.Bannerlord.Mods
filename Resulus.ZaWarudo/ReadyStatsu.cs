@@ -42,8 +42,20 @@ namespace Regulus.ZaWarudo
             {
                 if (agent == mainAgent)
                     continue;
+                agent.SetMaximumSpeedLimit(0.01f, false);
                 agent.SetController(Agent.ControllerType.None);
-                if (agent.MountAgent == null && (!agent.IsMount || agent.RiderAgent != null) )
+                agent.MovementFlags &= ~Agent.MovementControlFlag.MoveMask;
+
+
+                //agent.MovementInputVector = TaleWorlds.Library.Vec2.Zero;                
+                /*if (agent.MountAgent != null)
+                {
+                    agent.MountAgent.SetMaximumSpeedLimit(0.01f, false);
+                    agent.MountAgent.SetController(Agent.ControllerType.None);
+                    agent.MountAgent.MovementFlags = (Agent.MovementControlFlag)0;
+                    agent.MountAgent.SetMovementDirection(ref zero);
+                }*/
+                /*if (agent.MountAgent == null && (!agent.IsMount || agent.RiderAgent != null) )
                 {
                     
                     agent.MovementFlags = (Agent.MovementControlFlag)((uint)agent.MovementFlags & -2);
@@ -65,12 +77,13 @@ namespace Regulus.ZaWarudo
                     agent.MovementFlags = (Agent.MovementControlFlag)((uint)agent.MovementFlags & -9);
                     agent.MovementFlags = (Agent.MovementControlFlag)((uint)agent.MovementFlags & -5);
                     agent.MovementFlags = (Agent.MovementControlFlag)((uint)agent.MovementFlags | 2);
-                }
+                }*/
 
-                foreach (Mission.Missile item in Mission.Current.Missiles.ToList())
-                {
-                    stopMissile(item);
-                }
+
+            }
+            foreach (Mission.Missile item in Mission.Current.Missiles.ToList())
+            {
+                stopMissile(item);
             }
             DoneEvent(_Missiles);
         }
