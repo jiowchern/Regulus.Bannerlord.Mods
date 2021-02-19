@@ -7,29 +7,46 @@ using TaleWorlds.Library;
 using TaleWorlds.InputSystem;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace Regulus.ZaWarudo
 {
 
     internal class RunningStatsu :  Regulus.Utility.IStatus
     {
-        private readonly ZaWarudoMissile[] _Missiles;
-        
 
-        public event System.Action DoneEvent;
-        public RunningStatsu(ZaWarudoMissile[] missiles)
+
+		readonly System.Collections.Generic.Dictionary<Mission.Missile, ZaWarudoMissile> _Missiles;
+
+
+
+		public event System.Action DoneEvent;
+        public RunningStatsu()
         {
-            this._Missiles = missiles;
-			
+			_Missiles = new Dictionary<Mission.Missile, ZaWarudoMissile>();
+
+
 
 		}
 
         void IStatus.Enter()
         {			
-			Main.Enable = true;   
-        }
+			Main.Enable = true;
 
-        void IStatus.Leave()
+			var mainAgent = Mission.Current.MainAgent;
+			foreach (var agent in Mission.Current.Agents)
+			{
+				if (agent == mainAgent)
+					continue;
+				agent.SetMaximumSpeedLimit(0.01f, false);
+				agent.SetController(Agent.ControllerType.None);
+				agent.MovementFlags &= ~Agent.MovementControlFlag.MoveMask;
+			}
+
+
+		}
+
+		void IStatus.Leave()
         {
 			Main.Enable = false;
 			if (Mission.Current == null)
@@ -47,7 +64,7 @@ namespace Regulus.ZaWarudo
 
 
 
-			foreach (var missile2 in _Missiles)
+			foreach (var missile2 in _Missiles.Values)
 			{
 				var missile = missile2.missile;
 				
@@ -64,17 +81,7 @@ namespace Regulus.ZaWarudo
 		}
 		public void addMissileToMission(ZaWarudoMissile missileItem)
 		{
-			//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0010: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
-			//IL_003b: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0040: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0041: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0043: Unknown result type (might be due to invalid IL or missing references)
+			
 			Vec3 position = missileItem.position;
 			Vec3 velocity = missileItem.velocity;
 			MatrixFrame matrixFrame = missileItem.matrixFrame;
@@ -104,16 +111,27 @@ namespace Regulus.ZaWarudo
 				}
 			}
 			
-			/*foreach (var item2 in Mission.Current.Missiles.ToList())
+			foreach (var item2 in Mission.Current.Missiles.ToList())
 			{
-				stopMissile(item2);
-			}*/
+				_StopMissile(item2);
+			}
 		}
 
-		public int getFreeMissileIndex()
+        private void _StopMissile(Mission.Missile item)
+        {
+			if (_Missiles.ContainsKey(item))
+				return;
+			item.Stop();
+			var spawnedItem = (SpawnedItemEntity)Mission.Current.ActiveMissionObjects.ToList().Last();
+
+			_Missiles.Add(item , new ZaWarudoMissile(item , spawnedItem));
+
+		}
+
+        public int getFreeMissileIndex()
 		{
 			int num = 0;
-			foreach (var missile in _Missiles)
+			foreach (var missile in _Missiles.Values)
 			{
 				if (((MBMissile)missile.missile).Index > num)
 				{

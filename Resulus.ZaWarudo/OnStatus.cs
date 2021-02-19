@@ -25,9 +25,9 @@ namespace Regulus.ZaWarudo
             _Machine.Push(status);
         }
 
-        private void _ToRunningStatus(IEnumerable<ZaWarudoMissile> missiles)
+        private void _ToRunningStatus()
         {
-            var status = new RunningStatsu(missiles.ToArray());
+            var status = new RunningStatsu();
             status.DoneEvent += _ToReady;
             _Machine.Push(status);
         }

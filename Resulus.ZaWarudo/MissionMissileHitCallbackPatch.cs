@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Regulus.ZaWarudo.Extersion;
+using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Engine;
@@ -11,6 +12,7 @@ namespace Regulus.ZaWarudo
     [HarmonyPatch(typeof(Mission), "MissileHitCallback")]
     class MissionMissileHitCallbackPatch
     {
+        readonly static System.Collections.Concurrent.ConcurrentQueue<float> _AbsorbedDamages = new System.Collections.Concurrent.ConcurrentQueue<float>();
         static bool Prefix(Mission __instance, ref bool __result, out int hitParticleIndex, ref AttackCollisionData collisionData,
             Vec3 missileStartingPosition, Vec3 missilePosition, Vec3 missileAngularVelocity, Vec3 movementVelocity,
             MatrixFrame attachGlobalFrame, MatrixFrame affectedShieldGlobalFrame, int numDamagedAgents, Agent attacker, Agent victim,
@@ -24,8 +26,9 @@ namespace Regulus.ZaWarudo
 
             if (attacker == mainAgent)
             {
-                if(collisionData.MissileTotalDamage < 10)
+                if(collisionData.MissileTotalDamage < 5)
                 {
+                    
                     collisionData = AttackCollisionData.GetAttackCollisionDataForDebugPurpose(
                           collisionData.AttackBlockedWithShield,
                           collisionData.CorrectSideShieldBlock,
@@ -45,7 +48,7 @@ namespace Regulus.ZaWarudo
                           collisionData.CollisionBoneIndex,
                           collisionData.VictimHitBodyPart, collisionData.AttackBoneIndex, collisionData.AttackDirection, collisionData.PhysicsMaterialIndex,
                           collisionData.CollisionHitResultFlags, collisionData.AttackProgress, collisionData.CollisionDistanceOnWeapon, collisionData.AttackerStunPeriod,
-                          collisionData.DefenderStunPeriod, 100, collisionData.MissileStartingBaseSpeed, collisionData.ChargeVelocity, collisionData.FallSpeed,
+                          collisionData.DefenderStunPeriod, _GetRangeWeaponDamage(attacker , victim), collisionData.MissileStartingBaseSpeed, collisionData.ChargeVelocity, collisionData.FallSpeed,
                           collisionData.WeaponRotUp, collisionData.WeaponBlowDir, collisionData.CollisionGlobalPosition, collisionData.MissileVelocity,
                           collisionData.MissileStartingPosition, collisionData.VictimAgentCurVelocity, collisionData.CollisionGlobalNormal
                         );
@@ -81,9 +84,19 @@ namespace Regulus.ZaWarudo
 
             spawnedItem.GameEntity.Remove(81);
             spawnedItem.OnSpawnedItemEntityRemoved();
+            _AbsorbedDamages.Enqueue(collisionData.MissileTotalDamage);
             __result = false;
             return false;
         }
 
+        private static float _GetRangeWeaponDamage(Agent attacker, Agent victim)
+        {
+            float damage;
+            if (_AbsorbedDamages.TryDequeue(out damage))
+            {
+                return damage;
+            }
+            return 999;
+        }
     }
 }
