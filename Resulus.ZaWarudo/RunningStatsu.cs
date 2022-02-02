@@ -16,15 +16,13 @@ namespace Regulus.ZaWarudo
     {
 
 
-		readonly System.Collections.Generic.Dictionary<Mission.Missile, ZaWarudoMissile> _Missiles;
+		readonly System.Collections.Generic.Dictionary<Mission.Missile, ZaWarudoMissile> _Missiles;        
 
-
-
-		public event System.Action DoneEvent;
+        public event System.Action DoneEvent;
         public RunningStatsu()
         {
 			_Missiles = new Dictionary<Mission.Missile, ZaWarudoMissile>();
-
+			
 
 
 		}
@@ -32,8 +30,12 @@ namespace Regulus.ZaWarudo
         void IStatus.Enter()
         {			
 			Main.Enable = true;
+			
 
 			var mainAgent = Mission.Current.MainAgent;
+			
+
+
 			foreach (var agent in Mission.Current.Agents)
 			{
 				if (agent == mainAgent)
@@ -42,7 +44,7 @@ namespace Regulus.ZaWarudo
 				agent.SetController(Agent.ControllerType.None);
 				agent.MovementFlags &= ~Agent.MovementControlFlag.MoveMask;
 			}
-
+			
 
 		}
 
@@ -51,6 +53,8 @@ namespace Regulus.ZaWarudo
 			Main.Enable = false;
 			if (Mission.Current == null)
 				return;
+
+			
 			foreach (Agent agent in Mission.Current.Agents.ToArray())
 			{
 				if (agent == Mission.Current.MainAgent)
@@ -97,7 +101,7 @@ namespace Regulus.ZaWarudo
 				return;
 			}
 			if (Mission.Current == null)
-				return;
+				return;			
 			foreach (Agent agent in Mission.Current.Agents.ToArray())
             {
 				if(agent.Velocity.Length >= 0.7f)

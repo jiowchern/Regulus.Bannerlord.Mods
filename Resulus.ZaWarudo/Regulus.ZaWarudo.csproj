@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="AgentExtersion.cs" />
     <Compile Include="AgentPatch.cs" />
+    <Compile Include="AgentPropertiesSave.cs" />
     <Compile Include="AgentToDie.cs" />
     <Compile Include="BallistaPatch.cs" />
     <Compile Include="BatteringRamPatch.cs" />
@@ -72,11 +73,13 @@
     <Compile Include="EmptyStage.cs" />
     <Compile Include="IStatus.cs" />
     <Compile Include="MangonelPatch.cs" />
+    <Compile Include="MissionMeleeHitCallbackPatch.cs" />
     <Compile Include="MissionMissileHitCallbackPatch.cs" />
     <Compile Include="OffStatus.cs" />
     <Compile Include="OnStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadyStatsu.cs" />
+    <Compile Include="RunningBySlowStatsu.cs" />
     <Compile Include="RunningStatsu.cs" />
     <Compile Include="SiegeLadderPatch.cs" />
     <Compile Include="SiegeTowerPatch.cs" />
